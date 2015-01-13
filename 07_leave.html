@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>leave</title>
+	<link rel="stylesheet" href="css/stylesheet.css">
+	<style>
+
+		html, body, #container{
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			/*cursor: none;*/
+			text-align: center;
+		}
+		#controler{
+			position: absolute;
+			z-index: 500;
+			width: 100%;
+			bottom:0px;
+		}
+		.control{
+			color:#666;
+			width:50px;
+			height:50px;
+			margin:10px;
+			border: 1px solid #666;
+			text-align: center;
+			line-height: 50px;
+			float: left;
+		}
+		#container span{
+		    font-family: 'segoe_scriptregular';
+		    font-size: 80px;
+		    color:#ccc;
+		    padding:0px 20px;
+		    top:45%;
+			left: 45%;
+		    visibility: hidden;
+		    opacity: 1;
+		}
+		.particle { 
+			font-size: 40px;
+			position: absolute!important;
+			top:45%!important;
+			left: 40%!important;
+		}
+	</style>
+</head>
+<body>
+	<!-- <div id="controler">
+		<div class="show control">show</div>
+		<div class="explode control">ex</div>
+		<div class="back control">back</div>
+		<div class="mouse control">mouse</div>
+	</div> -->
+	<div id="container">
+		na miya lihu na miya lihu na miya lihu amaw na demaway na 'emasi ka itras nanu zi semekalr patalisisek 
+		na miya lihu na miya lihu na miya lihu amaw na demaway na 'emasi ka itras nanu zi semekalr patalisisek 
+		demaway semekalr patali maka 'atras ikani dal'e nanu ika kakihu kemay kanu ngadan demaway temuwamuwan semekalr itras demaway temuwamuwan patalisisek
+	</div>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.backstretch.min.js"></script>
+<script src="js/TweenMax.min.js"></script>
+<script>
+	var width = 100;
+	var height = 100;
+	var mouseX;
+	var mouseY;
+	var follow = false;
+	var index =0;
+	var particleLength;
+	var images = [
+  		  "img/leave/004.jpg",
+	]
+
+	$(function(){
+		background();
+		//init 3d environment;
+		TweenLite.set($('#container'), {css:{transformPerspective:800, perspective:800, transformStyle:"preserve-3d"}});
+		splitWord($('#container'));
+		//show text
+		document.addEventListener('keydown', function(e){
+                if( e.keyCode == '39' ){ //'right arrow'next slide
+                   	$('body').data('backstretch').next();
+                }
+                if(e.keyCode == '37'){ //'leftarrow' prev slide
+                	$('body').data('backstretch').prev();
+                }
+                if(e.keyCode == '90'){  //'z'show text
+                	randomShow(index);
+					if(index<particleLength){
+						index++;
+					}
+                }
+                if(e.keyCode == '77'){ //toggle follow mouse
+                	if(follow){
+						follow = false;
+						$(window).unbind('click');
+					}else{
+						follow = true;
+						followMouse();
+					}
+                }
+                if(e.keyCode == '67'){ //'c' rotate
+                	rotate();
+                }
+                if(e.keyCode == '86'){ //'v' rotate back
+                	rotate2();
+                }
+                if(e.keyCode == '66'){ //'b' back
+                	flyback();
+                }
+                if(e.keyCode == '88'){ //'x' explode
+                	explode();
+                }
+         }, false);
+
+		//explode text
+		$('.explode').click(function(){
+			explode();
+		})
+		//back
+		$('.back').click(function(){
+			flyback();
+		})
+		
+	})
+	function background(){
+		 $.backstretch(images, {fade: 5000});
+		 $('body').data('backstretch').pause();
+	}
+	function splitWord(container){
+		var words = container.text().split(" ");
+		container.empty();
+		$.each(words, function(i, v) {
+		    container.append($("<span class='particle'>").text(v));
+		});
+		particleLength = $('.particle').length;
+	}
+	function randomShow(i){
+		//$('.particle').css({'position':'absolute'});
+			//TweenMax.killTweensOf($(element));
+		var x = $(window).width()*Math.random()-50;
+		var y = $(window).height()*Math.random()-50;
+		var ele = $('.particle').eq(i);
+		var scale = 1+Math.random();
+		TweenMax.set(ele,{
+			//x: x, 
+			//y: y,
+			textShadow:"0px 0px 10px white",
+			color:"none",
+		})
+		TweenMax.to(ele, 0.5, {
+			scaleX: scale, 
+			scaleY: scale,
+			//delay:index,
+		    textShadow:"0px 0px 2px white",
+		    color:"none",
+		    //color:"#ffffff", // IE10 unfortunately hides the shadow too
+		    autoAlpha:1,
+		    onComplete: function() {
+            	tweenRandomAuto(ele);
+        	}
+		});
+		
+	}
+	function tweenRandomAuto(ele){
+		var winW = $(window).width();
+		var winH = $(window).height();
+		var x = -(winW/2) + Math.random()*winW;
+        var y = -(winH/2) + Math.random()*winH;
+        var scale = Math.random();
+        var a = 0.2;
+        var d = 50*Math.random()
+	    TweenLite.to(ele, d, {x: x, y: y, scaleX: scale, scaleY: scale, alpha: a, 
+	    	rotationX:randomNumber(-360, 600), rotationY:randomNumber(-360, -600),
+            onComplete: function() {
+            tweenRandomAuto(ele);
+        }});
+	}
+
+	function followMouse(){
+		$(window).click(function(event){
+			//$('.particle').css('position','absolute');
+			$('.particle').each(function(index, element){
+
+				mouseX = event.clientX+(Math.random()*200-100);
+				mouseY = event.clientY+(Math.random()*200-100);
+				var d = 10*Math.random()
+				//$(element).css('position','absolute');
+				//TweenMax.killTweensOf($(element));
+				TweenMax.to($(element),10,{ x:mouseX, y:mouseY, onComplete:tweenRandomAuto, onCompleteParams:[$(element)]});
+			})
+		})
+	}
+	
+	function tweenRandom(ele){
+		var x = -400 + Math.random()*800;
+        var y = -400 + Math.random()*800;
+        var delay = Math.random()*1.5;
+        var radius = 2 + Math.random()*6;
+        var scale = Math.random()*3;
+        var a = 0.2 + Math.random()*0.5;
+	    TweenLite.to(ele, 20*Math.random(), {x: mouseX + x, y: mouseY + y, scaleX: scale, scaleY: scale, alpha: a, ease: "Linear.easeNone", overwrite:"auto",
+            delay: delay, onComplete: function() {
+             tweenRandomAuto(ele);
+        }});
+	}
+	function rotate(){
+		$('.particle').each(function(index, element){
+			//TweenMax.killTweensOf($(element));
+			var speed = Math.random()*100
+			var delay = index*Math.random();
+
+			TweenMax.to($(element), speed, {
+				rotationY:"+=360", 
+				transformOrigin:"50% 50% -500",
+				//ease:"Bounce.easeOut",
+				onComplete: function() {
+	            	tweenRandomAuto2($(element));
+	        	}
+			})
+		})
+	}
+	function rotate2(){
+		$('.particle').each(function(index, element){
+			//TweenMax.killTweensOf($(element));
+			var speed = Math.random()*100
+			var delay = index*Math.random();
+			TweenMax.to($(element), speed, {
+				rotationY:0, 
+				transformOrigin:"50% 50% -500",
+				onComplete: function() {
+	            	tweenRandomAuto2($(element));
+	        	}
+			})
+		})
+	}
+	function explode(){
+		$('.particle').each(function(index, element){
+			TweenLite.to($(element), 3, {css:{z:800, Color:Math.random() * 0xffffff, rotationX:randomNumber(-360, 600), rotationY:randomNumber(-360, -600)}});
+		})
+	}
+	function flyback(){
+		$('.particle').each(function(index, element){
+			TweenLite.to($(element), 3, {css:{z:0, rotationX:0, rotationY:0}});
+		})
+	}
+	function randomNumber(min, max){
+	    return Math.floor(Math.random() * (1 + max - min) + min);
+	}	
+</script>
+</body>
+</html>

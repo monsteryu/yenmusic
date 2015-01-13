@@ -1,0 +1,273 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>taiya</title>
+	<link rel="stylesheet" href="css/stylesheet.css">
+	<style>
+		
+		html, body, #container{
+			padding: 0px;
+			margin: 0px;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			cursor: none;
+			/*cursor: none;*/
+			text-align: center;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+		#container>div{
+			font-family: 'segoe_scriptregular';
+		    font-size: 50px;
+		    color:#ccc;
+		    float: left;
+		    padding:0px 20px;
+	
+		    position: absolute;
+		    top:50%;
+		   
+		    margin-top: -25px;
+		    width: 100%;
+		    text-align: center;
+		    visibility: hidden;
+		    opacity: 0;
+			text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.8);
+		}
+		#container>div>span{
+			padding:0px 10px;
+			position: relative;
+
+		}
+
+		#controler{
+			position: absolute;
+			z-index: 500;
+			width: 100%;
+			bottom:0px;
+		}
+		.control{
+			color:#666;
+			width:50px;
+			height:50px;
+			margin:10px;
+			border: 1px solid #666;
+			text-align: center;
+			line-height: 50px;
+			float: left;
+		}
+
+		#container>span{
+		    font-family: 'segoe_scriptregular';
+		    font-size: 80px;
+		    color:#ccc;
+		    display:block;
+		    float: left;
+		    padding:0px 20px;
+		    position: relative;
+		    top:0px;
+		    left:0px;
+		    visibility: hidden;
+		    opacity: 1;
+		}
+		.particle { 
+			/*position: absolute;*/
+			font-size: 50px; 
+		}
+	</style>
+</head>
+<body>
+	<!-- <div id="controler">
+		<div class="showline control">show1</div>
+		<div class="next control">next</div>
+		<div class="prev control">prev</div>
+	</div> -->
+	<div id="container">
+		<div>b'nux sa sba yen</div>
+		<div>pucin kin-na ho lan</div>
+		<div>kin ho-lan lta toyel</div>
+		<div>gml lan ita kwa ra</div>
+		<div>yu tas lumbuta kmAyen kmyabox</div>
+		<div>hparas mu mu sin nuo nan</div>
+		<div>mu mu sin-n'rhgan</div>
+		<div>la xi pqiwal qiq-icing</div>
+		<div>b ho you mqiqa nux</div>
+		<div>wi wan all na bi nuoq</div>
+		<div>wi wa allna mqo yow</div>
+		<div>pwa gi pin na ka yel na</div>
+		<div>tu nux bu bu na ya ya</div>
+		<div>la xi hmut mqia nux</div>
+		<div>tq-qu sa ni qo qu mxa yel</div>
+		<div>kia qe ran pa pak</div>
+		<div>te tqo yet mql qio nuw</div>
+		<div>t-tluql b-nkisga</div>
+		<div>rsa ni no ku m ho wal</div>
+		<div>howal ya ba ta utux</div>
+		<div>hparas gaga kra hu</div>
+		<div>laxl ta ps ya qeh</div>
+		<div>psblaq ta lta kwa ra</div>
+		<div>lta kwa ra kin ba han na tayel</div>
+	</div>
+	
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery.backstretch.min.js"></script>
+<script src="js/TweenMax.min.js"></script>
+<script>
+
+	var width = 100;
+	var height = 100;
+	var mouseX;
+	var mouseY;
+	var follow = false;
+	var index =0;
+	var particleLength;
+	var images = [
+	    "img/taiya/001.jpg"
+	    , "img/taiya/002.jpg"
+	    , "img/taiya/003.jpg"
+	    , "img/taiya/004.jpg"
+	    , "img/taiya/005.jpg"
+	    , "img/taiya/006.jpg"
+	    , "img/taiya/007.jpg"
+	    , "img/taiya/008.jpg"
+	    , "img/taiya/009.jpg"
+	    , "img/taiya/010.jpg"
+	    , "img/taiya/011.jpg"
+	    , "img/taiya/012.jpg"
+	    , "img/taiya/013.jpg"
+	    , "img/taiya/014.jpg"
+	    , "img/taiya/015.jpg"
+	    , "img/taiya/016.jpg"
+	    , "img/taiya/017.jpg"
+	    , "img/taiya/018.jpg"
+	    , "img/taiya/019.jpg"
+	    , "img/taiya/020.jpg"
+	    , "img/taiya/021.jpg"
+	    , "img/taiya/022.jpg"
+	    , "img/taiya/023.jpg"
+	    , "img/taiya/024.jpg"
+	    , "img/taiya/025.jpg"
+	    , "img/taiya/026.jpg"
+	    , "img/taiya/027.jpg"
+	    , "img/taiya/028.jpg"
+	    , "img/taiya/029.jpg"
+	    , "img/taiya/030.jpg"
+	    , "img/taiya/031.jpg"
+	    , "img/taiya/032.jpg"
+	    , "img/taiya/033.jpg"
+	    , "img/taiya/034.jpg"
+	]
+
+	$(function(){
+		background()
+		//init 3d environment;
+		TweenLite.set($('#container'), {css:{transformPerspective:800, perspective:800, transformStyle:"preserve-3d"}});
+
+		//splitWord($('#container'));
+		document.addEventListener('keydown', function(e){
+                if( e.keyCode == '39' ){
+                   	$('body').data('backstretch').next();
+                }
+                if(e.keyCode == '37'){
+                	$('body').data('backstretch').prev();
+                }
+                if(e.keyCode == '76'){  //'l'show text
+                	TweenLite.to($('.backstretch img'), 20, {
+				    	scaleX: 1.1, 
+				    	scaleY: 1.1, 
+				    	ease: Linear.easeNone,
+			        });
+                }
+                if(e.keyCode == '90'){
+                	showline();
+                }
+         }, false);
+	})
+	function background(){
+		 $.backstretch(images, {fade: 5000});
+		 $('body').data('backstretch').pause();
+		 var next = function(x){
+		 	x.preventDefault();
+		 }
+		 var prev = function(x){
+		 	x.preventDefault();
+		 	$('body').data('backstretch').prev();
+		 }
+	}
+	
+	function showline(){
+		var ele = $('#container>div').eq(index);
+		var scale = 1.1;
+		TweenMax.to(ele,5,{
+			autoAlpha:1,
+			overwrite:"auto",
+			scaleX: scale, 
+	    	scaleY: scale,
+			onComplete:function(){splitLine(ele)}});
+		index++;
+		
+	}
+	function splitLine(ele){
+		var words = ele.text().split(" ")
+		ele.empty();
+		$.each(words, function(i, v) {
+		    ele.append($("<span class='hide'>").text(v));
+		});
+		$('.hide').each(function(i){
+			randomHide($(this));
+		})
+		
+	}
+	function randomHide	(ele){
+        var y = Math.random() < 0.5 ? 250 : -250;
+        var scale = Math.random()*1.5;
+        var a = 0
+        var t = 5
+        var d = 2*Math.random();
+   
+	    TweenLite.to(ele, t, {
+	    	delay:d,
+	    	ease: "Linear.easeNone",
+	    	css:{
+	    		top:y, 
+	    		autoAlpha:a,
+	    		textShadow:"0px 0px 10px white",
+		    color:"none",
+	    	}
+	    	//onComplete:function(){randomMove(ele)}
+        });
+	}
+	function randomMove(ele){
+		
+		var x = -100 + Math.random()*200;
+        var y = -100 + Math.random()*200;
+        var scale = Math.random()*1.5;
+        var a = 0.1 + Math.random()*0.5;
+        var d = 50*Math.random();
+        var top = ele.position().top;
+        var left = ele.position().left;
+        var z = Math.random()*100;
+        
+	    TweenLite.to(ele, d, {
+	    	x:left+x, 
+	    	y:top+y,
+	    	scaleX: scale, 
+	    	scaleY: scale, 
+	    	alpha: a, 
+	    	ease: Linear.easeNone,
+            onComplete: function() {
+            	randomMove(ele);
+        	}
+        });
+
+	}
+	function randomNumber(min, max){
+	    return Math.floor(Math.random() * (1 + max - min) + min);
+	}	
+</script>
+</body>
+</html>

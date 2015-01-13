@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>tweener</title>
+	<link rel="stylesheet" href="css/stylesheet.css">
+	<style>
+		
+		html, body, #container{
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			text-align: justify;
+			/*cursor: none;*/
+			text-align: center;
+			cursor: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-o-user-select: none;
+			user-select: none;
+		}
+		#container{
+			position: absolute;
+			z-index: 401;
+		}
+		#controler{
+			position: absolute;
+			z-index: 500;
+			width: 100%;
+			bottom:0px;
+		}
+		.control{
+			color:#666;
+			width:50px;
+			height:50px;
+			margin:10px;
+			border: 1px solid #666;
+			text-align: center;
+			line-height: 50px;
+			float: left;
+		}
+		.particle { 
+			/*position: absolute;*/
+			font-size: 40px; 
+		}
+		span{
+			font-family: 'segoe_scriptregular';
+			position: relative;
+			line-height:20px;
+			color:#fff;
+			padding: 10px;
+			display: inline-block;
+			/*background: url(img/songofwind/001.jpg) no-repeat center center fixed; 
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;*/
+			visibility: hidden;
+			opacity: 0;
+		}
+		body { 
+		  background-color: #000000; 
+		  padding: 0; 
+		  margin: 0; 
+		 /* background: url(img/songofwind/001.jpg) no-repeat center center fixed; 
+			-webkit-background-size: cover;
+			-moz-background-size: cover;
+			-o-background-size: cover;
+			background-size: cover;*/
+		  overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+	<!-- <div id="controler">
+		
+		<div class="explode control">ex</div>
+		<div class="back control">back</div>
+		<div class="mouse control">mouse</div>
+		<div class="show control">show</div>
+		<div class="rotate control">rotate</div>
+		<div class="rotate2 control">rotate2</div>
+	</div> -->
+	
+	<!-- 風之歌 song of the wind 
+		http://www.youtube.com/watch?v=QHY1xsSOK4g
+	-->
+	<div id="container">
+		ho  ye  yan 
+		ho  wai  yi  yo  yi  ho  hai  yan 
+		yi  ya  ho  hai  yan  ha  a  yi  ye  yan 
+		ha  a  yi  ye  yan  hai  yan 
+		
+		ho  ye  yan 
+		ho  wai  yi  yo  yi  ho  hai  yan 
+		yi  ya  ho  hai  yan  ha  a  yi  ye  yan 
+		ha  a  yi  ye  yan  hai  yan 
+		
+		ho  hai  ye  yan  ho  hai  yan 
+		ho  hai  yan 
+		yi  ya  ho  hai  yan  ha  a  yi  ye  yan 
+		ha  a  yi  ye  yan  hai  yan 
+
+		ho  ye  yan 
+		ho  wai  yi  yo  yi  ho  hai  yan 
+		yi  ya  ho  hai  yan  ha  a  yi  ye  yan 
+		ha  a  yi  ye  yan  hai  yan 
+		
+		ho  ye  yan 
+		ho  wai  yi  yo  yi  ho  hai  yan 
+		yi  ya  ho  hai  yan  ha  a  yi  ye  yan 
+		ha  a  yi  ye  yan  hai  yan 
+		
+		ho  hai  ye  yan  ho  hai  yan 
+		ho  hai  yan 
+		yi  ya  ho  hai  yan  ha  a  yi  ye  yan 
+		ha  a  yi  ye  yan  hai  yan
+		
+		ho  hai  ye  yan  ho  hai  yan 
+		ho  hai  yan 
+		yi  ya  ho  hai  yan  ha  a  yi  ye  yan 
+		ha  a  yi  ye  yan  hai  yan
+	</div>
+
+	
+	<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="js/jquery.backstretch.min.js"></script>
+	<script src="js/TweenMax.min.js"></script>
+	<script>
+
+	var width = 100;
+	var height = 100;
+	var mouseX;
+	var mouseY;
+	var follow = false;
+	var index =0;
+	var index2 =0;
+	var particleLength;
+	var images = [
+  		  "img/amei/001.jpg"
+	    , "img/amei/002.jpg"
+	    , "img/amei/003.jpg"
+	    , "img/amei/004.jpg"
+	    , "img/amei/005.jpg"
+	    , "img/amei/006.jpg"
+	    , "img/amei/007.jpg"
+	    , "img/amei/008.jpg"
+	    , "img/amei/009.jpg"
+	    , "img/amei/010.jpg"
+	    , "img/amei/011.jpg"
+	    , "img/amei/012.jpg"
+	    , "img/amei/013.jpg"
+	    , "img/amei/014.jpg"
+	    , "img/amei/015.jpg"
+	    , "img/amei/016.jpg"
+	    , "img/amei/017.jpg"
+	    , "img/amei/018.jpg"
+	    , "img/amei/019.jpg"
+	    , "img/amei/020.jpg"
+	    , "img/amei/021.jpg"
+	    , "img/amei/022.jpg"
+	    , "img/amei/023.jpg"
+	    , "img/amei/024.jpg"
+	    , "img/amei/025.jpg"
+	    , "img/amei/026.jpg"
+	    , "img/amei/027.jpg"
+	    , "img/amei/028.jpg"
+
+	    
+	]
+	$(function(){
+		background();
+		
+		//init 3d environment;
+		TweenLite.set($('#container'), {css:{transformPerspective:800, perspective:800, transformStyle:"preserve-3d"}});
+		splitWord($('#container'));
+		//setbg();
+		//show text
+		
+		// $( "span" ).hover(
+		//   function() {
+		//     $( this ).append( $( "<span> ***</span>" ) );
+		//   }, function() {
+		//     $( this ).find( "span:last" ).remove();
+		//   }
+		// );
+		document.addEventListener('keydown', function(e){
+                if( e.keyCode == '39' ){ //'right arrow'next slide
+                   	$('body').data('backstretch').next();
+                }
+                if(e.keyCode == '37'){ //'leftarrow' prev slide
+                	$('body').data('backstretch').prev();
+                }
+                if(e.keyCode == '66'){ //'b' back
+                	flyback();
+                }
+                if(e.keyCode == '90'){ //'z'show text
+                	randomShow(index);
+					if(index<particleLength){
+						index++;
+					}
+                }
+                if(e.keyCode == '88'){ //'x' explode
+                	fly(index2);
+               		 if(index2<particleLength){
+						index2++;
+					}
+                }
+                if(e.keyCode == '76'){  //'l'show text
+                	TweenLite.to($('.backstretch img'), 20, {
+				    	scaleX: 1.1, 
+				    	scaleY: 1.1, 
+				    	ease: Linear.easeNone,
+			        });
+                }
+                if(e.keyCode == '77'){ //'m' mouse follow
+                	if(follow){
+						follow = false;
+						$(window).unbind('click');
+					}else{
+						follow = true;
+						followMouse();
+					}
+                }
+         }, false);
+	})
+	function background(){
+		 $.backstretch(images, {fade: 5000});
+		 $('body').data('backstretch').pause();
+		 var next = function(x){
+		 	x.preventDefault();
+		 }
+		 var prev = function(x){
+		 	x.preventDefault();
+		 	$('body').data('backstretch').prev();
+		 }
+	}
+	
+	function splitWord(container){
+		var words = container.text().split(" ");
+		container.empty();
+		$.each(words, function(i, v) {
+		    container.append($("<span class='particle'>").text(v));
+		});
+		particleLength = $('.particle').length;
+	}
+	function show(){
+		$('.particle').each(function(index, element){
+			//TweenMax.killTweensOf($(element));
+
+			TweenMax.to($(element),5,{delay:index*2, autoAlpha:1,overwrite:"auto"});
+		})
+	}
+	function fly(i){
+		var ele = $('.particle').eq(i);
+		TweenMax.to(ele,0,{delay:1,onComplete:function(){tweenRandomAuto(ele)}});
+		
+	}
+	
+	function randomShow(i){
+		
+		var ele = $('.particle').eq(i);
+		
+		TweenMax.to(ele, 5, {
+			
+		    autoAlpha:1, onComplete:function(){
+		    	tweenAlpha(ele)
+		    }
+		    
+		});
+		
+	}
+	function tweenAlpha(ele){
+		
+        var a = 0.1 + Math.random()*0.5;
+    
+        //var top = ele.offset().top;
+        //var left = ele.offset().left;
+	    TweenLite.to(ele, 2, { alpha: a, 
+	    	
+            onComplete: function() {
+            	tweenAlpha(ele);
+        	}
+        });
+	}
+	function tweenRandomAuto(ele){
+		var x = -100 + Math.random()*100;
+        var y = -100 + Math.random()*100;
+        var scale = Math.random()*1.5;
+        var a = 0.1 + Math.random()*0.5;
+        var d = 30;
+        //var top = ele.offset().top;
+        //var left = ele.offset().left;
+	    TweenLite.to(ele, d, {x:x, y:y, scaleX: scale, scaleY: scale, alpha: a, 
+	    	rotationX:randomNumber(-360, 600), 
+	    	rotationY:randomNumber(-360, -600),
+	    	ease: "Linear.easeNone",
+            onComplete: function() {
+            	tweenRandomAuto(ele);
+        	}
+        });
+	}
+	
+	
+	function followMouse(){
+		$(window).click(function(event){
+			$('.particle').each(function(index, element){
+				mouseX = event.clientX+(Math.random()*200-100);
+				mouseY = event.clientY+(Math.random()*200-100);
+				var d = 10*Math.random()
+				//$(element).css('position','absolute');
+				//TweenMax.killTweensOf($(element));
+				TweenMax.to($(element),10,{
+					delay:d, 
+					x:mouseX, 
+					y:mouseY, 
+					onComplete:tweenRandomAuto2, 
+					onCompleteParams:[$(element)]});
+			})
+		})
+	}
+
+	function drop(ele){
+		var y = $(window).height()-ele.height();
+		TweenLite.to(ele, 20*Math.random(), {
+			y:y, 
+			autoAlpha:0.3,
+			overwrite:"auto",
+			ease:"Bounce.easeOut"
+        });
+	}
+	function explode(){
+		$('.particle').each(function(index, element){
+			TweenLite.to($(element), 3, {css:{z:800, Color:Math.random() * 0xffffff, rotationX:randomNumber(-360, 600), rotationY:randomNumber(-360, -600)}});
+		})
+	}
+	function flyback(){
+		$('.particle').each(function(index, element){
+			TweenLite.to($(element), 3, {delay:index, css:{z:0, rotationX:0, rotationY:0}});
+		})
+	}
+	function randomNumber(min, max){
+	    return Math.floor(Math.random() * (1 + max - min) + min);
+	}
+
+
+	
+</script>
+</body>
+</html>
